@@ -1,7 +1,8 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { FormEvent, useState } from "react";
-import toast, { Toaster } from "react-hot-toast"
+import toast, { Toaster } from "react-hot-toast";
+import useSWR from "swr";
 
 interface Note {
   user: string;
@@ -9,7 +10,7 @@ interface Note {
 }
 
 const Home: NextPage = () => {
-  const [data, setData] = useState<Note>({
+  const [info, setInfo] = useState<Note>({
     user: "",
     content: "",
   });
@@ -18,7 +19,7 @@ const Home: NextPage = () => {
     e.preventDefault();
 
     try {
-      const { user, content } = data;
+      const { user, content } = info;
       const body: Note = {
         user,
         content,
@@ -29,12 +30,18 @@ const Home: NextPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
-      toast.success("Notes added!")
-      setData({ user: "", content: "" });
+      toast.success("Notes added!");
+      setInfo({ user: "", content: "" });
     } catch (error) {
       console.log(error);
     }
   };
+
+  // get data from server
+  const getData = (url: string) => fetch(url).then((res) => res.json());
+  const { data, error } = useSWR("/api/getall", getData, {
+    refreshInterval: 1000,
+  });
 
   return (
     <div>
@@ -56,16 +63,16 @@ const Home: NextPage = () => {
             <input
               required
               type="text"
-              value={data.user}
-              onChange={(e) => setData({ ...data, user: e.target.value })}
+              value={info.user}
+              onChange={(e) => setInfo({ ...info, user: e.target.value })}
               className="w-full border-2 border-gray-600 p-2"
               placeholder="Insert name"
             />
             <textarea
               required
               placeholder="What are you thinking about?"
-              value={data.content}
-              onChange={(e) => setData({ ...data, content: e.target.value })}
+              value={info.content}
+              onChange={(e) => setInfo({ ...info, content: e.target.value })}
               className="w-full border-2 border-gray-600 p-2"
             ></textarea>
             <button
@@ -77,16 +84,17 @@ const Home: NextPage = () => {
             <Toaster />
           </form>
         </div>
-        <div className="w-full">
-          <div className="w-full border-2 p-4 flex flex-col">
-            <div className="w-full flex justify-between items-center">
-              <div className="font-bold text-lg">Thanos</div>
-              <div className="text-slate-300">14/07</div>
-            </div>
-            <div className="font-normal text-md">
-              Balance as all things should be..!
-            </div>
-          </div>
+        <div className="w-full flex flex-col gap-4 justify-center items-center">
+          {data &&
+            data.map(({ user, content }: Note, i: number) => (
+              <div key={i} className="w-full border-2 p-4 flex flex-col">
+                <div className="w-full flex justify-between items-center">
+                  <div className="font-bold text-lg">{user}</div>
+                  <div className="text-slate-300">14/07</div>
+                </div>
+                <div className="font-normal text-md">{content}</div>
+              </div>
+            ))}
         </div>
       </div>
     </div>
