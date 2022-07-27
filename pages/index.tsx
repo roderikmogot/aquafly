@@ -29,6 +29,7 @@ const Home: NextPage = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(body),
       });
+      toast.success("Notes added!")
       setData({ user: "", content: "" });
     } catch (error) {
       console.log(error);
@@ -73,6 +74,7 @@ const Home: NextPage = () => {
             >
               Add
             </button>
+            <Toaster />
           </form>
         </div>
         <div className="w-full">
