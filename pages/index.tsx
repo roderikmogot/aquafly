@@ -84,7 +84,7 @@ const Home: NextPage = () => {
             <Toaster />
           </form>
         </div>
-        <div className="w-full flex flex-col gap-4 justify-center items-center">
+        <div className="h-1/2 overflow-y-scroll flex gap-2 flex-col w-full">
           {data &&
             data.map(({ user, content }: Note, i: number) => (
               <div key={i} className="w-full border-2 p-4 flex flex-col">
