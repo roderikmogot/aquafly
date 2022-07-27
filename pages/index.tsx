@@ -1,6 +1,7 @@
 import type { NextPage } from "next";
 import Head from "next/head";
 import { FormEvent, useState } from "react";
+import toast, { Toaster } from "react-hot-toast"
 
 interface Note {
   user: string;
