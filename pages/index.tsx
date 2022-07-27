@@ -14,11 +14,25 @@ const Home: NextPage = () => {
   });
 
   const submitHandler = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    // if succesful
-    setData({user: '', content: ''})
-  }
+    try {
+      const { user, content } = data;
+      const body: Note = {
+        user,
+        content,
+      };
+
+      await fetch("api/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+      setData({ user: "", content: "" });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <div>
@@ -33,12 +47,15 @@ const Home: NextPage = () => {
           <h1 className="text-xl font-bold text-center">
             What&#39;s on your mind?
           </h1>
-          <form className="w-full flex flex-col justify-center items-center gap-1" onSubmit={e => submitHandler(e)}>
+          <form
+            className="w-full flex flex-col justify-center items-center gap-1"
+            onSubmit={(e) => submitHandler(e)}
+          >
             <input
               required
               type="text"
               value={data.user}
-              onChange={(e) => setData({...data, user: e.target.value})}
+              onChange={(e) => setData({ ...data, user: e.target.value })}
               className="w-full border-2 border-gray-600 p-2"
               placeholder="Insert name"
             />
@@ -46,10 +63,15 @@ const Home: NextPage = () => {
               required
               placeholder="What are you thinking about?"
               value={data.content}
-              onChange={(e) => setData({...data, content: e.target.value})}
+              onChange={(e) => setData({ ...data, content: e.target.value })}
               className="w-full border-2 border-gray-600 p-2"
             ></textarea>
-            <button type="submit" className="py-1 w-full bg-blue-400 text-white">Add</button>
+            <button
+              type="submit"
+              className="py-1 w-full bg-blue-400 text-white"
+            >
+              Add
+            </button>
           </form>
         </div>
         <div className="w-full">
