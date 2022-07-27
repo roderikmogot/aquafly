@@ -49,7 +49,7 @@ const Home: NextPage = () => {
               onChange={(e) => setData({...data, content: e.target.value})}
               className="w-full border-2 border-gray-600 p-2"
             ></textarea>
-            <button className="py-1 w-full bg-blue-400 text-white">Add</button>
+            <button type="submit" className="py-1 w-full bg-blue-400 text-white">Add</button>
           </form>
         </div>
         <div className="w-full">
